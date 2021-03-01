@@ -1,0 +1,13 @@
+//
+//  production debug.xcconfig
+//  boilerplate-ios
+//
+//  Created by Ígor Yamamoto on 14/03/19.
+//  Copyright © 2019 Jungle Devs. All rights reserved.
+//
+
+// Configuration settings file format documentation can be found at:
+// https://help.apple.com/xcode/#/dev745c5c974
+
+#include "../production.base.xcconfig"
+#include "Pods/Target Support Files/Pods-boilerplate-ios/Pods-boilerplate-ios.production debug.xcconfig"

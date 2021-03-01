@@ -1,0 +1,48 @@
+name: Runner
+attributes:
+  ORGANIZATIONNAME: Jungle Devs
+options:
+  bundleIdPrefix: com.jungledevs
+configs:
+  Staging Debug: debug
+  Staging Release: release
+  Production Debug: debug
+  Production Release: release
+settings:
+  SWIFT_VERSION: 5
+  IPHONEOS_DEPLOYMENT_TARGET: "11.0"
+targets:
+  Runner:
+    type: application
+    platform: iOS
+    deploymentTarget: '11.0'
+    settings:
+      TARGETED_DEVICE_FAMILY: 1
+      IPHONEOS_DEPLOYMENT_TARGET: "11.0"
+    sources:
+      - path: App
+        excludes: #exclude test spec files
+          - "*Spec.swift"
+          - "**/*Spec.swift"
+          - "**/**/*Spec.swift"
+          - "**/**/**/*Spec.swift"
+          - "**/**/**/**/*Spec.swift"
+      - path: Configs
+    configFiles:
+      Staging Debug: Configs/Support/staging debug.xcconfig
+      Staging Release: Configs/Support/staging release.xcconfig
+      Production Debug: Configs/Support/production debug.xcconfig
+      Production Release: Configs/Support/production release.xcconfig
+    scheme:
+      configVariants:
+        - Staging
+        - Production
+    postCompileScripts:
+      - script: '${PODS_ROOT}/SwiftLint/swiftlint'
+        name: SwiftLint
+      - script: '${PODS_ROOT}/Target Support Files/Pods-Runner/Pods-boilerplate-ios-frameworks.sh'
+        name: '[CP] Embed Pods Frameworks'
+        inputFileLists:
+          - '${PODS_ROOT}/Target Support Files/Pods-Runner/Pods-boilerplate-ios-frameworks-${CONFIGURATION}-input-files.xcfilelist'
+        outputFileLists:
+          - '${PODS_ROOT}/Target Support Files/Pods-Runner/Pods-boilerplate-ios-frameworks-${CONFIGURATION}-output-files.xcfilelist'
