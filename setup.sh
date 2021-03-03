@@ -10,7 +10,6 @@ cd "../$newname"
 mv README-TEMPLATE.md README.md
 
 cd "ios/"
-pod init
 
 oldname="boilerplate-ios"
 sed -i "" "s/$oldname/$newname/g" ./project.yml
@@ -29,5 +28,4 @@ rm setup.sh
 rm README.md
 
 xcodegen
-pod install
 rm project.yml
