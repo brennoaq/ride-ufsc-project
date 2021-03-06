@@ -1,6 +1,6 @@
 //
 //  staging release.xcconfig
-//  boilerplate-ios
+//  test-two
 //
 //  Created by Andrio Frizon on 5/11/20.
 //  Copyright © 2020 Jungle Devs. All rights reserved.
@@ -10,4 +10,6 @@
 // https://help.apple.com/xcode/#/dev745c5c974
 
 #include "../staging.base.xcconfig"
-//#include "Pods/Target Support Files/Pods-boilerplate-ios/Pods-boilerplate-ios.staging release.xcconfig"
+#include "Pods/Target Support Files/Pods-Runner/Pods-Runner.release-runner staging.xcconfig"
+#include "Pods/Target Support Files/Pods-Runner/Pods-Runner.release.xcconfig"
+#include "Flutter/Generated.xcconfig"
