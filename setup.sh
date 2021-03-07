@@ -22,10 +22,6 @@ sed -i "" "s/$oldname/$newname/g" ./README.md
 testOldName="boilerplate_ios"
 find . -type f -name "*.swift" -exec sed -i "" "s/$testOldName/$testNewName/g" {} \; #Rename boilerplate name on test files
 
-rm -rf .git *.xcworkspace *.xcodeproj XcodeTemplates/
 rm Podfile.lock
 rm setup.sh
-rm README.md
-
-xcodegen
-rm project.yml
+pod install
