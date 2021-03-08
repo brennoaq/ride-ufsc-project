@@ -32,7 +32,6 @@ sed -i "" "s/$oldAppName/$newAppName/g" ./README.md
 
 rm Podfile.lock
 rm setup.sh
-pod install
 cd ..
 
 # Android 
@@ -40,3 +39,9 @@ cd android/app
 
 sed -i "" "s/$oldBundleID/$newbundleID/g" ./build.gradle
 sed -i "" "s/$oldAppName/$newAppName/g" ./build.gradle
+
+cd ..
+cd ..
+flutter pub get
+cd ios/
+pod install
