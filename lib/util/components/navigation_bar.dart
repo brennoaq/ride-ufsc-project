@@ -1,4 +1,4 @@
-import 'package:builerplate_flutter/config/theme.dart';
+import 'package:boilerplate_flutter/config/theme.dart';
 import 'package:flutter/material.dart';
 
 class NavigationBar extends StatefulWidget {
@@ -27,18 +27,36 @@ class _NavigationBarState extends State<NavigationBar> {
       onTap: widget._onTap,
       items: <BottomNavigationBarItem>[
         BottomNavigationBarItem(
-          icon: Icon(Icons.add_box,  color: BoilerColors.white[64],),
-          activeIcon: Icon(Icons.add_box,  color: Theme.of(context).primaryColor,),
+          icon: Icon(
+            Icons.add_box,
+            color: BoilerColors.white[64],
+          ),
+          activeIcon: Icon(
+            Icons.add_box,
+            color: Theme.of(context).primaryColor,
+          ),
           label: '',
         ),
         BottomNavigationBarItem(
-          icon: Icon(Icons.add_box,  color: BoilerColors.white[64],),
-          activeIcon: Icon(Icons.add_box,  color: Theme.of(context).primaryColor,),
+          icon: Icon(
+            Icons.add_box,
+            color: BoilerColors.white[64],
+          ),
+          activeIcon: Icon(
+            Icons.add_box,
+            color: Theme.of(context).primaryColor,
+          ),
           label: '',
         ),
         BottomNavigationBarItem(
-          icon: Icon(Icons.add_box,  color: BoilerColors.white[64],),
-          activeIcon: Icon(Icons.add_box,  color: Theme.of(context).primaryColor,),
+          icon: Icon(
+            Icons.add_box,
+            color: BoilerColors.white[64],
+          ),
+          activeIcon: Icon(
+            Icons.add_box,
+            color: Theme.of(context).primaryColor,
+          ),
           label: '',
         ),
       ],

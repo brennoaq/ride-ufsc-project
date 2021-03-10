@@ -1,4 +1,4 @@
-import 'package:builerplate_flutter/config/theme.dart';
+import 'package:boilerplate_flutter/config/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 

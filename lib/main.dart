@@ -1,5 +1,5 @@
-import 'package:builerplate_flutter/config/app_routes.dart';
-import 'package:builerplate_flutter/config/theme.dart';
+import 'package:boilerplate_flutter/config/app_routes.dart';
+import 'package:boilerplate_flutter/config/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
@@ -27,8 +27,11 @@ class _AppState extends State<App> {
         title: 'BoilerPlate',
         debugShowCheckedModeBanner: false,
         theme: appThemeData,
-        initialRoute: '/core',
-        onGenerateRoute: AppRoutes.routeFactory,
+        home: Container(),
+        initialRoute: '/login',
+        onGenerateRoute: (settings) {
+          return AppRoutes.routeFactory(settings);
+        },
         navigatorObservers: [routeObserver],
       ),
     );

@@ -1,5 +1,5 @@
-import 'package:builerplate_flutter/modules/core/core_screen.dart';
-import 'package:builerplate_flutter/modules/login/login_screen.dart';
+import 'package:boilerplate_flutter/modules/core/core_screen.dart';
+import 'package:boilerplate_flutter/modules/login/login_screen.dart';
 import 'package:flutter/material.dart';
 
 final RouteObserver<PageRoute> routeObserver = RouteObserver<PageRoute>();
@@ -7,7 +7,6 @@ final RouteObserver<PageRoute> routeObserver = RouteObserver<PageRoute>();
 class AppRoutes {
   static const String login = '/login';
   static const String core = '/core';
-
 
   static Map<String, WidgetBuilder> defaultBuilder = <String, WidgetBuilder>{
     login: (BuildContext context) => LoginScreen(),
