@@ -12,7 +12,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 final RouteObserver<PageRoute> routeObserver = RouteObserver<PageRoute>();
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await launcher(accountRepository);
   Intl.defaultLocale = 'pt_BR';
   runApp(App());
 }
@@ -26,11 +28,6 @@ class App extends StatefulWidget {
 }
 
 class _AppState extends State<App> {
-  @override
-  void initState() {
-    super.initState();
-    launcher(accountRepository);
-  }
 
   @override
   Widget build(BuildContext context) {
