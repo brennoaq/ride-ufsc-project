@@ -35,11 +35,12 @@ dev_dependencies:
   flutter_svg: ^0.19.3
   flutter_bloc: ^6.1.1
   equatable: ^2.0.0
-  http: ^0.12.2
+  http: ^0.13.0
   rxdart: ^0.24.1
   mask_text_input_formatter: ^1.1.0
   intl: ^0.17.0
   firebase_crashlytics: ^0.4.0+1
+  shared_preferences: ^2.0.5
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

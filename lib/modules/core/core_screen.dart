@@ -1,4 +1,5 @@
 import 'package:boilerplate_flutter/util/components/navigation_bar.dart';
+import 'package:boilerplate_flutter/config/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -75,11 +76,17 @@ class _CoreScreenState extends State<CoreScreen> with RouteAware {
   Widget _getBody(CoreState state) {
     Widget body = Container();
     if (state is Home) {
-      return Container();
+      return Container(
+        color: BoilerColors.orange,
+      );
     } else if (state is History) {
-      return Container();
+      return Container(
+        color: BoilerColors.white[40],
+      );
     } else if (state is Profile) {
-      return Container();
+      return Container(
+        color: BoilerColors.white[24],
+      );
     }
     return body;
   }
