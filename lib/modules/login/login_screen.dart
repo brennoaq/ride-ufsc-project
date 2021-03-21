@@ -43,7 +43,6 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Widget _getBody(BuildContext context, LoginState state) {
-    Widget body = Container();
     if (state is Idle) {
       return SingleChildScrollView(
         child: Column(
@@ -52,11 +51,8 @@ class _LoginScreenState extends State<LoginScreen> {
               padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 0),
               child: Column(
                 children: [
-                  Image.asset(
-                    'assets/images/logo.png',
-                    width: 72,
-                    height: 72,
-                  ),
+                  SvgPicture.asset('assets/images/logo.svg',
+                      width: 72, height: 72, color: Colors.green),
                   Text(
                     'Bem-vindo de volta',
                     style: TextStyle(
@@ -149,7 +145,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                       MaterialTapTargetSize.shrinkWrap,
                                   minWidth: 0,
                                   height: 0,
-                                  child: FlatButton(
+                                  child: TextButton(
                                     onPressed: () {},
                                     child: SvgPicture.asset(
                                       'assets/icons/ic_eye.svg',
@@ -184,7 +180,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 state.isLoginButtonEnabled ? () {} : null,
                           ),
                         ),
-                        FlatButton(
+                        TextButton(
                           child: Text(
                             'Esqueceu sua senha?',
                             style: TextStyle(fontWeight: FontWeight.w600),
@@ -203,6 +199,5 @@ class _LoginScreenState extends State<LoginScreen> {
     } else {
       return CircularProgressIndicator();
     }
-    return body;
   }
 }
