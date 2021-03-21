@@ -26,10 +26,12 @@ class _LoginScreenState extends State<LoginScreen> {
       },
       child: BlocConsumer<LoginBloc, LoginState>(
         listener: (BuildContext context, LoginState state) {
-          // if (state.nextRoute != null) {
-          // Navigator.of(context, rootNavigator: true)
-          //     .pushNamed(state.nextRoute);
-          // }
+          if (state is Idle && state.nextRoute != null) {
+            Navigator.of(context, rootNavigator: true)
+                .pushNamedAndRemoveUntil(state.nextRoute, (route) {
+              return false;
+            });
+          }
         },
         builder: (BuildContext context, LoginState state) {
           return Scaffold(
@@ -176,8 +178,14 @@ class _LoginScreenState extends State<LoginScreen> {
                                   color: Colors.white,
                                   fontWeight: FontWeight.w600),
                             ),
-                            onPressed:
-                                state.isLoginButtonEnabled ? () {} : null,
+                            onPressed: state.isLoginButtonEnabled
+                                ? () {
+                                    //TODO call correct event OnLoginButtonClicked instead of forcing SUCCESS STATE
+                                    context
+                                        .read<LoginBloc>()
+                                        .add(OnLoginSuccess());
+                                  }
+                                : null,
                           ),
                         ),
                         TextButton(
