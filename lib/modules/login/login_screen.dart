@@ -1,5 +1,8 @@
+import 'package:boilerplate_flutter/config/styles/default_button_style.dart';
 import 'package:boilerplate_flutter/config/theme.dart';
+import 'package:boilerplate_flutter/modules/login/bloc/login_bloc.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -11,55 +14,81 @@ class _LoginScreenState extends State<LoginScreen> {
   bool focusEmail = false;
   bool focusPassword = false;
   final _formKey = GlobalKey<FormState>();
+  LoginBloc bloc;
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 24, vertical: 0),
-                child: Column(
-                  children: [
-                    Image.asset(
-                      'assets/images/logo.png',
-                      width: 72,
-                      height: 72,
+    return BlocProvider<LoginBloc>(
+      create: (BuildContext context) {
+        LoginBloc tempBloc = LoginBloc();
+        bloc = tempBloc;
+        return tempBloc;
+      },
+      child: BlocConsumer<LoginBloc, LoginState>(
+        listener: (BuildContext context, LoginState state) {
+          // if (state.nextRoute != null) {
+          // Navigator.of(context, rootNavigator: true)
+          //     .pushNamed(state.nextRoute);
+          // }
+        },
+        builder: (BuildContext context, LoginState state) {
+          return Scaffold(
+            body: SafeArea(
+              child: _getBody(context, state),
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  Widget _getBody(BuildContext context, LoginState state) {
+    Widget body = Container();
+    if (state is Idle) {
+      return SingleChildScrollView(
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 0),
+              child: Column(
+                children: [
+                  Image.asset(
+                    'assets/images/logo.png',
+                    width: 72,
+                    height: 72,
+                  ),
+                  Text(
+                    'Bem-vindo de volta',
+                    style: TextStyle(
+                      fontFamily: 'Courier Prime',
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                      height: 2,
                     ),
-                    Text(
-                      'Bem-vindo de volta',
-                      style: TextStyle(
-                        fontFamily: 'Courier Prime',
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                        height: 2,
-                      ),
-                      textAlign: TextAlign.center,
+                    textAlign: TextAlign.center,
+                  ),
+                  SizedBox(height: 4),
+                  Text(
+                    'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Egestas eget risus netus',
+                    style: TextStyle(
+                      fontSize: 14,
                     ),
-                    SizedBox(height: 4),
-                    Text(
-                      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Egestas eget risus netus',
-                      style: TextStyle(
-                        fontSize: 14,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                    SizedBox(height: 40),
-                    Form(
-                      key: _formKey,
-                      child: Column(
-                        children: [
-                          Focus(
-                            onFocusChange: (hasFocus) {
-                              setState(() {
-                                focusEmail = hasFocus;
-                              });
-                            },
-                            child: TextFormField(
-                              decoration: InputDecoration(
+                    textAlign: TextAlign.center,
+                  ),
+                  SizedBox(height: 40),
+                  Form(
+                    key: _formKey,
+                    child: Column(
+                      children: [
+                        Focus(
+                          onFocusChange: (hasFocus) {
+                            setState(() {
+                              focusEmail = hasFocus;
+                            });
+                          },
+                          child: TextFormField(
+                            controller: state.emailFieldState.controller,
+                            decoration: InputDecoration(
                                 focusedBorder: UnderlineInputBorder(
                                   borderSide:
                                       BorderSide(color: Color(0xFF666362)),
@@ -77,22 +106,26 @@ class _LoginScreenState extends State<LoginScreen> {
                                   minHeight: 16,
                                   minWidth: 40,
                                 ),
-                              ),
-                              keyboardType: TextInputType.emailAddress,
-                            ),
-                          ),
-                          SizedBox(height: 20),
-                          Focus(
-                            onFocusChange: (hasFocus) {
-                              setState(() {
-                                focusPassword = hasFocus;
-                              });
+                                errorText: state.emailFieldState.error),
+                            keyboardType: TextInputType.emailAddress,
+                            onChanged: (email) {
+                              context.read<LoginBloc>().add(OnFormChanged());
                             },
-                            child: TextFormField(
-                              enableSuggestions: false,
-                              autocorrect: false,
-                              obscureText: true,
-                              decoration: InputDecoration(
+                          ),
+                        ),
+                        SizedBox(height: 20),
+                        Focus(
+                          onFocusChange: (hasFocus) {
+                            setState(() {
+                              focusPassword = hasFocus;
+                            });
+                          },
+                          child: TextFormField(
+                            controller: state.passwordFieldState.controller,
+                            enableSuggestions: false,
+                            autocorrect: false,
+                            obscureText: true,
+                            decoration: InputDecoration(
                                 focusedBorder: UnderlineInputBorder(
                                   borderSide:
                                       BorderSide(color: Color(0xFF666362)),
@@ -127,50 +160,49 @@ class _LoginScreenState extends State<LoginScreen> {
                                     ),
                                   ),
                                 ),
-                              ),
-                            ),
+                                errorText: state.passwordFieldState.error),
+                            onChanged: (password) {
+                              context.read<LoginBloc>().add(OnFormChanged());
+                            },
                           ),
-                          SizedBox(
-                            height: 40,
-                          ),
-                          SizedBox(
-                            width: double.infinity,
-                            height: 56,
-                            child: RaisedButton(
-                              color: Colors.black,
-                              disabledColor: Colors.grey[300],
-                              elevation: 0,
-                              child: Text(
-                                'Entrar',
-                                style: TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.w600),
-                              ),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.all(
-                                  Radius.circular(4),
-                                ),
-                              ),
-                              onPressed: () {},
-                            ),
-                          ),
-                          FlatButton(
+                        ),
+                        SizedBox(
+                          height: 40,
+                        ),
+                        SizedBox(
+                          width: double.infinity,
+                          height: 56,
+                          child: ElevatedButton(
+                            style: getDefaultButtonStyle(),
                             child: Text(
-                              'Esqueceu sua senha?',
-                              style: TextStyle(fontWeight: FontWeight.w600),
+                              'Entrar',
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w600),
                             ),
-                            onPressed: () {},
-                          )
-                        ],
-                      ),
+                            onPressed:
+                                state.isLoginButtonEnabled ? () {} : null,
+                          ),
+                        ),
+                        FlatButton(
+                          child: Text(
+                            'Esqueceu sua senha?',
+                            style: TextStyle(fontWeight: FontWeight.w600),
+                          ),
+                          onPressed: () {},
+                        )
+                      ],
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
-            ],
-          ),
+            ),
+          ],
         ),
-      ),
-    );
+      );
+    } else {
+      return CircularProgressIndicator();
+    }
+    return body;
   }
 }
