@@ -4,7 +4,7 @@ import 'dart:io';
 import 'package:boilerplate_flutter/util/api/endpoints.dart';
 import 'package:http/http.dart' as http;
 
-Future fetchLogin(String email, String password) async {
+Future login(String email, String password) async {
   print(email + password);
 
   Uri url = Uri.parse(EndPoints.login());
