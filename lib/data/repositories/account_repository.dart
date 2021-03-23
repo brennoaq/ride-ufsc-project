@@ -3,15 +3,17 @@ import 'dart:convert';
 import 'package:boilerplate_flutter/config/settings.dart';
 import 'package:boilerplate_flutter/data/models/user_model.dart';
 import 'package:boilerplate_flutter/util/api/login_api.dart';
-import 'package:boilerplate_flutter/util/validator/validator.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AccountRepository {
   Future<UserModel> getUser({String email, String password}) async {
     var snapshot = await login(email, password);
-    if (Validator.isNull(snapshot) && snapshot.isNotEmpty) {
+    if (snapshot?.isNotEmpty == true) {
+      Map userMap = snapshot['user'];
       UserModel user = UserModel(
-          username: snapshot.username, email: snapshot.email, id: snapshot.id);
+          username: userMap['username'],
+          email: userMap['email'],
+          id: userMap['id']);
       return user;
     }
     return null;

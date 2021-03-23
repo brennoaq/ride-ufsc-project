@@ -1,5 +1,3 @@
-import 'package:boilerplate_flutter/config/styles/default_button_style.dart';
-import 'package:boilerplate_flutter/config/theme.dart';
 import 'package:boilerplate_flutter/modules/login/bloc/login_bloc.dart';
 import 'package:boilerplate_flutter/modules/login/components/login_form.dart';
 import 'package:flutter/material.dart';
@@ -21,7 +19,27 @@ class _LoginScreenState extends State<LoginScreen> {
         bloc = tempBloc;
         return tempBloc;
       },
-      child: LoginForm(),
+      child: BlocListener<LoginBloc, LoginState>(
+        listener: (BuildContext context, LoginState state) {
+          if (state is Idle && state.nextRoute != null) {
+            Navigator.of(context, rootNavigator: true)
+                .pushNamedAndRemoveUntil(state.nextRoute, (route) {
+              return false;
+            });
+          } else if (state is Idle && state.nonFieldError?.isNotEmpty == true) {
+            ScaffoldMessenger.of(context)
+              ..hideCurrentSnackBar()
+              ..showSnackBar(
+                const SnackBar(content: Text('Authentication Failure')),
+              );
+          }
+        },
+        child: Scaffold(
+          body: SafeArea(
+            child: LoginForm(),
+          ),
+        ),
+      ),
     );
   }
 }

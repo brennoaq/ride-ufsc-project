@@ -24,5 +24,9 @@ class OnLoginSuccess extends LoginEvent {
 }
 
 class OnLoginFail extends LoginEvent {
-  OnLoginFail();
+  OnLoginFail(this.error);
+  final Exception error;
+
+  @override
+  List<Object> get props => [error];
 }

@@ -3,7 +3,6 @@ import 'package:boilerplate_flutter/config/theme.dart';
 import 'package:boilerplate_flutter/modules/login/bloc/login_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:formz/formz.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class LoginForm extends StatefulWidget {
@@ -12,33 +11,9 @@ class LoginForm extends StatefulWidget {
 }
 
 class _LoginFormState extends State<LoginForm> {
-  LoginState stateGlobal;
-
   @override
   Widget build(BuildContext context) {
-    return BlocListener<LoginBloc, LoginState>(
-      listener: (BuildContext context, LoginState state) {
-        if (state is Idle && state.nextRoute != null) {
-          stateGlobal = state;
-          Navigator.of(context, rootNavigator: true)
-              .pushNamedAndRemoveUntil(state.nextRoute, (route) {
-            return false;
-          });
-        } else if (state.status.isSubmissionFailure) {
-          stateGlobal = state;
-          ScaffoldMessenger.of(context)
-            ..hideCurrentSnackBar()
-            ..showSnackBar(
-              const SnackBar(content: Text('Authentication Failure')),
-            );
-        }
-      },
-      child: Scaffold(
-        body: SafeArea(
-          child: _bodyLogin(),
-        ),
-      ),
-    );
+    return _bodyLogin();
   }
 }
 
@@ -55,9 +30,7 @@ class __bodyLoginState extends State<_bodyLogin> {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<LoginBloc, LoginState>(
-      buildWhen: (previous, current) =>
-          previous.email != current.email &&
-          previous.password != current.password,
+      buildWhen: (previous, current) => previous != current,
       builder: (context, state) {
         if (state is Idle) {
           return SingleChildScrollView(
@@ -122,7 +95,9 @@ class __bodyLoginState extends State<_bodyLogin> {
                                     errorText: state.emailFieldState.error),
                                 keyboardType: TextInputType.emailAddress,
                                 onChanged: (email) {
-                                  context.read<LoginBloc>().emailChanged(email);
+                                  context
+                                      .read<LoginBloc>()
+                                      .add(OnFormChanged());
                                 },
                               ),
                             ),
@@ -177,7 +152,7 @@ class __bodyLoginState extends State<_bodyLogin> {
                                 onChanged: (password) {
                                   context
                                       .read<LoginBloc>()
-                                      .passwordChanged(password);
+                                      .add(OnFormChanged());
                                 },
                               ),
                             ),
@@ -195,8 +170,7 @@ class __bodyLoginState extends State<_bodyLogin> {
                                       color: Colors.white,
                                       fontWeight: FontWeight.w600),
                                 ),
-                                onPressed: state.isLoginButtonEnabled &&
-                                        state.status.isValidated
+                                onPressed: state.isLoginButtonEnabled
                                     ? () {
                                         context
                                             .read<LoginBloc>()
