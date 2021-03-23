@@ -39,8 +39,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     } else if (event is OnLoginSuccess) {
       return _mapOnLoginSuccessToState(event);
     } else if (event is OnLoginFail) {
-      //TODO implement real event treatment
-      return state;
+      return _mapOnLoginFailedToState(event);
     } else if (event is OnForgotPasswordClicked) {
       //TODO implement real event treatment
       return state;
@@ -50,7 +49,9 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
 
   LoginState _mapOnFormChangedToState(LoginEvent event) {
     LoginState currentState = state;
-    if (currentState is Idle || currentState is Loading) {
+    if (currentState is Idle ||
+        currentState is Loading ||
+        currentState is Error) {
       return _getIdleState(null);
     }
     return currentState;
@@ -58,22 +59,25 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
 
   LoginState _mapOnLoginButtonClickedToState(LoginEvent event) {
     _accountRepository
-        .getUser(
+        .login(
             email: _emailEditingController.text,
             password: _passwordEditingController.text)
-        .then((value) {
-      if (value != null) {
-        add(OnLoginSuccess());
+        .then((error) {
+      if (error != null) {
+        add(OnLoginFail(error));
       } else {
-        add(OnLoginFail(Exception('Something went wrong')));
+        add(OnLoginSuccess());
       }
     });
-
     return Loading();
   }
 
   LoginState _mapOnLoginSuccessToState(LoginEvent event) {
     return _getIdleState(AppRoutes.core);
+  }
+
+  LoginState _mapOnLoginFailedToState(OnLoginFail event) {
+    return Error(error: event.error);
   }
 
   LoginState _getIdleState(String nextRoute) {
@@ -97,18 +101,5 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
         passwordFieldState: passwordFieldState,
         isLoginButtonEnabled: isValidPassword && isValidEmail,
         nextRoute: nextRoute);
-  }
-
-  Future<void> logInWithCredentials() async {
-    try {
-      userModel = await _accountRepository.getUser(
-        email: _emailEditingController.text,
-        password: _passwordEditingController.text,
-      );
-      _accountRepository.saveUserCache(userModel);
-      add(OnLoginSuccess());
-    } on Exception catch (error) {
-      add(OnLoginFail(error));
-    }
   }
 }

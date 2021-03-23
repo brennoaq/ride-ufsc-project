@@ -1,34 +1,45 @@
-import 'dart:convert';
-
-import 'package:boilerplate_flutter/config/settings.dart';
 import 'package:boilerplate_flutter/data/models/user_model.dart';
-import 'package:boilerplate_flutter/util/api/login_api.dart';
+import 'package:boilerplate_flutter/util/api/user_api.dart';
+import 'package:rxdart/rxdart.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AccountRepository {
-  Future<UserModel> getUser({String email, String password}) async {
-    var snapshot = await login(email, password);
-    if (snapshot?.isNotEmpty == true) {
-      Map userMap = snapshot['user'];
-      UserModel user = UserModel(
-          username: userMap['username'],
-          email: userMap['email'],
-          id: userMap['id']);
-      return user;
-    }
-    return null;
+  AccountRepository() {
+    _getToken().then((value) => tokenSubject.add(value));
   }
 
-  Future<void> saveUserCache(UserModel user) async {
+  BehaviorSubject<String> tokenSubject = BehaviorSubject();
+
+  String get token => tokenSubject.value;
+
+  Future<Exception> login({String email, String password}) async {
+    var loginResponse = await UserApi.login(email, password);
+    if (loginResponse != null) {
+      try {
+        await createSession(loginResponse.token, loginResponse.user);
+      } catch (error) {
+        return Exception(error.toString());
+      }
+
+      return null;
+    }
+    return Exception('Something went wrong');
+  }
+
+  Future<String> _getToken() async {
     final prefs = await SharedPreferences.getInstance();
-    prefs.setString(
-        'user',
-        jsonEncode({
-          "id": user.id,
-          "email": user.email,
-          "username": user.username,
-        }));
-    Settings.user = user;
+    return prefs.getString('token');
+  }
+
+  Future<void> createSession(String token, UserModel user) async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setString('token', token);
+    updateUser(user);
+  }
+
+  Future<void> updateUser(UserModel user) async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setString('user', user.jsonString);
   }
 
   Future<bool> logout() async {

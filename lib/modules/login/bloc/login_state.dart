@@ -4,7 +4,6 @@ abstract class LoginState extends Equatable {
   const LoginState();
 }
 
-
 class Idle extends LoginState {
   const Idle({
     this.emailFieldState,
@@ -21,8 +20,24 @@ class Idle extends LoginState {
   final String nextRoute;
 
   @override
-  List<Object> get props =>
-      [emailFieldState, passwordFieldState, isLoginButtonEnabled, nonFieldError, nextRoute];
+  List<Object> get props => [
+        emailFieldState,
+        passwordFieldState,
+        isLoginButtonEnabled,
+        nonFieldError,
+        nextRoute
+      ];
+}
+
+class Error extends LoginState {
+  const Error({
+    this.error,
+  });
+
+  final Exception error;
+
+  @override
+  List<Object> get props => [error];
 }
 
 class Loading extends LoginState {

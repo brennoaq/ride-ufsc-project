@@ -1,8 +1,5 @@
-import 'dart:convert';
-
 import 'package:boilerplate_flutter/config/app_routes.dart';
 import 'package:boilerplate_flutter/config/theme.dart';
-import 'package:boilerplate_flutter/data/models/user_model.dart';
 import 'package:boilerplate_flutter/data/repositories/account_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -50,23 +47,9 @@ class _AppState extends State<App> {
 
 Future launcher(AccountRepository accountRepository) async {
   final prefs = await SharedPreferences.getInstance();
-  final result = prefs.getString('user');
+  final token = prefs.getString('token');
 
-  if (result != null) {
-    var resultInCache = jsonDecode(result);
-    if (resultInCache['id'] != null && resultInCache.toString().isNotEmpty) {
-      try {
-        var user = UserModel(
-          id: resultInCache['id'],
-          email: resultInCache['email'],
-        );
-        await accountRepository.saveUserCache(user);
-      } catch (e) {
-        route = '/login';
-      }
-    } else {
-      route = '/login';
-    }
+  if (token != null) {
     route = '/core';
   } else {
     route = '/login';
