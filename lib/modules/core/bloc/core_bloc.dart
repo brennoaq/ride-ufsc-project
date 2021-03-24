@@ -1,4 +1,6 @@
 import 'dart:async';
+import 'package:boilerplate_flutter/data/models/user_model.dart';
+import 'package:boilerplate_flutter/data/repositories/account_repository.dart';
 import 'package:equatable/equatable.dart';
 import 'package:bloc/bloc.dart';
 
@@ -7,11 +9,22 @@ part 'core_event.dart';
 part 'core_state.dart';
 
 class CoreBloc extends Bloc<CoreEvent, CoreState> {
-  CoreBloc() : super(InitialState()) {
+  CoreBloc(AccountRepository accountRepository)
+      : assert(accountRepository != null),
+        _accountRepository = accountRepository,
+        super(InitialState()) {
+    listeners.add(_accountRepository.userSubject.listen((user) {
+      userModel = user;
+      add(CoreScreenUpdated());
+      print(user);
+    }));
+
     add(OnTabChanged(0));
   }
 
   List<StreamSubscription> listeners = [];
+  final AccountRepository _accountRepository;
+  UserModel userModel;
 
   @override
   Stream<CoreState> mapEventToState(
@@ -23,6 +36,8 @@ class CoreBloc extends Bloc<CoreEvent, CoreState> {
   CoreState _mapEventToState(CoreEvent event) {
     if (event is OnTabChanged) {
       return _mapOnChangedTabEvent(event);
+    } else if (event is Logout) {
+      return _mapLogoutEventToState();
     } else if (event is ScreenResumed) {
       return _mapScreenResumedEventToState();
     }
@@ -50,6 +65,12 @@ class CoreBloc extends Bloc<CoreEvent, CoreState> {
       return History(null);
     }
     return currentState;
+  }
+
+  CoreState _mapLogoutEventToState() {
+    //TODO implements new
+
+    return state;
   }
 
   @override

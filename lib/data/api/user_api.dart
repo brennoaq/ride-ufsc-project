@@ -11,7 +11,6 @@ class UserApi {
     final http.Response response =
         await http.post(url, body: {'email': email, 'password': password});
     final data = jsonDecode(response.body);
-    print(data);
     if (response.statusCode == HttpStatus.ok) {
       final loginResponse = LoginResponse.fromJSON(data);
       return loginResponse;

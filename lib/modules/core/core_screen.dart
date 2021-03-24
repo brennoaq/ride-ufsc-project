@@ -1,15 +1,23 @@
+import 'package:boilerplate_flutter/config/styles/default_button_style.dart';
+import 'package:boilerplate_flutter/data/models/user_model.dart';
+import 'package:boilerplate_flutter/data/repositories/account_repository.dart';
 import 'package:boilerplate_flutter/util/components/navigation_bar.dart';
 import 'package:boilerplate_flutter/config/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 import 'bloc/core_bloc.dart';
 
 class CoreScreen extends StatefulWidget {
-  const CoreScreen({@required RouteObserver routeObserver})
-      : _routeObserver = routeObserver;
+  const CoreScreen({
+    @required RouteObserver routeObserver,
+    @required AccountRepository accountRepository,
+  })  : _routeObserver = routeObserver,
+        _accountRepository = accountRepository;
 
   final RouteObserver _routeObserver;
+  final AccountRepository _accountRepository;
 
   @override
   _CoreScreenState createState() => _CoreScreenState();
@@ -41,7 +49,7 @@ class _CoreScreenState extends State<CoreScreen> with RouteAware {
   Widget build(BuildContext context) {
     return BlocProvider<CoreBloc>(
       create: (BuildContext context) {
-        CoreBloc tempBloc = CoreBloc();
+        CoreBloc tempBloc = CoreBloc(widget._accountRepository);
         bloc = tempBloc;
         return tempBloc;
       },
@@ -75,9 +83,41 @@ class _CoreScreenState extends State<CoreScreen> with RouteAware {
 
   Widget _getBody(CoreState state) {
     Widget body = Container();
+    UserModel userModel = bloc.userModel;
     if (state is Home) {
       return Container(
         color: BoilerColors.orange,
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              SvgPicture.asset('assets/images/logo.svg',
+                  width: 72, height: 72, color: Colors.green),
+              Text(
+                userModel.username,
+                style: Theme.of(context).textTheme.headline2,
+              ),
+              Text(
+                userModel.email,
+                style: Theme.of(context).textTheme.headline1,
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top: 100),
+                child: ElevatedButton(
+                  onPressed: () {
+                    context.read<CoreBloc>().add(Logout());
+                  },
+                  style: getDefaultButtonStyle(),
+                  child: Text(
+                    'Logout',
+                    style: TextStyle(
+                        color: Colors.white, fontWeight: FontWeight.w600),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
       );
     } else if (state is History) {
       return Container(

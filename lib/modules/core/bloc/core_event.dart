@@ -20,6 +20,10 @@ class ScreenResumed extends CoreEvent {
   ScreenResumed();
 }
 
+class Logout extends CoreEvent {
+  Logout();
+}
+
 class CoreScreenUpdated extends CoreEvent {
   CoreScreenUpdated();
 

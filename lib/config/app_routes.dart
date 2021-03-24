@@ -1,8 +1,10 @@
+import 'package:boilerplate_flutter/data/repositories/account_repository.dart';
 import 'package:boilerplate_flutter/modules/core/core_screen.dart';
 import 'package:boilerplate_flutter/modules/login/login_screen.dart';
 import 'package:flutter/material.dart';
 
 final RouteObserver<PageRoute> routeObserver = RouteObserver<PageRoute>();
+AccountRepository accountRepository = AccountRepository();
 
 class AppRoutes {
   static const String login = '/login';
@@ -19,6 +21,7 @@ class AppRoutes {
           builder: (context) {
             return CoreScreen(
               routeObserver: routeObserver,
+              accountRepository: accountRepository,
             );
           },
         );
