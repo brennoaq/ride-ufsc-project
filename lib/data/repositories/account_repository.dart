@@ -1,5 +1,5 @@
+import 'package:boilerplate_flutter/data/api/user_api.dart';
 import 'package:boilerplate_flutter/data/models/user_model.dart';
-import 'package:boilerplate_flutter/util/api/user_api.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -13,16 +13,16 @@ class AccountRepository {
   String get token => tokenSubject.value;
 
   Future<Exception> login({String email, String password}) async {
-    var loginResponse = await UserApi.login(email, password);
-    if (loginResponse != null) {
-      try {
+    try {
+      var loginResponse = await UserApi.login(email, password);
+      if (loginResponse != null) {
         await createSession(loginResponse.token, loginResponse.user);
-      } catch (error) {
-        return Exception(error.toString());
+        return null;
       }
-
-      return null;
+    } catch (error) {
+      return Exception(error.toString());
     }
+
     return Exception('Something went wrong');
   }
 
