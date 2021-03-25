@@ -6,6 +6,7 @@ import 'package:boilerplate_flutter/config/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:flutter_phoenix/flutter_phoenix.dart';
 
 import 'bloc/core_bloc.dart';
 
@@ -59,6 +60,9 @@ class _CoreScreenState extends State<CoreScreen> with RouteAware {
             Navigator.of(context, rootNavigator: true)
                 .pushNamed(state.nextRoute);
           }
+          // } else if (state is Logout) {
+          //   Navigator.pop(context);
+          // }
         },
         builder: (BuildContext context, CoreState state) {
           return Container(
@@ -66,7 +70,7 @@ class _CoreScreenState extends State<CoreScreen> with RouteAware {
             child: SafeArea(
               top: false,
               child: Scaffold(
-                body: _getBody(state),
+                body: _getBody(context, state),
                 bottomNavigationBar: NavigationBar(
                   currentIndex: state.index,
                   onTap: (index) {
@@ -81,7 +85,7 @@ class _CoreScreenState extends State<CoreScreen> with RouteAware {
     );
   }
 
-  Widget _getBody(CoreState state) {
+  Widget _getBody(BuildContext context, CoreState state) {
     Widget body = Container();
     UserModel userModel = bloc.userModel;
     if (state is Home) {
@@ -106,6 +110,9 @@ class _CoreScreenState extends State<CoreScreen> with RouteAware {
                 child: ElevatedButton(
                   onPressed: () {
                     context.read<CoreBloc>().add(Logout());
+                    // Nav
+                    // igator.pop(context);
+                    Phoenix.rebirth(context);
                   },
                   style: getDefaultButtonStyle(),
                   child: Text(

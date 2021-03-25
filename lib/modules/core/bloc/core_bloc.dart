@@ -16,7 +16,6 @@ class CoreBloc extends Bloc<CoreEvent, CoreState> {
     listeners.add(_accountRepository.userSubject.listen((user) {
       userModel = user;
       add(CoreScreenUpdated());
-      print(user);
     }));
 
     add(OnTabChanged(0));
@@ -68,8 +67,7 @@ class CoreBloc extends Bloc<CoreEvent, CoreState> {
   }
 
   CoreState _mapLogoutEventToState() {
-    //TODO implements new
-
+    _accountRepository.logout();
     return state;
   }
 
