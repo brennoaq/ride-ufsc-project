@@ -66,9 +66,6 @@ class _CoreScreenState extends State<CoreScreen> with RouteAware {
                   .pushNamed(state.nextRoute);
             }
           }
-          // } else if (state is Logout) {
-          //   Navigator.pop(context);
-          // }
         },
         builder: (BuildContext context, CoreState state) {
           return Container(
