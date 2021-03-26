@@ -56,7 +56,7 @@ class _CoreScreenState extends State<CoreScreen> with RouteAware {
       child: BlocConsumer<CoreBloc, CoreState>(
         listener: (BuildContext context, CoreState state) {
           if (state.nextRoute != null) {
-            if (state.nextRoute == AppRoutes.loginRestart) {
+            if (state.nextRoute == AppRoutes.appRestart) {
               Navigator.of(context, rootNavigator: true)
                   .pushNamedAndRemoveUntil(state.nextRoute, (route) {
                 return false;

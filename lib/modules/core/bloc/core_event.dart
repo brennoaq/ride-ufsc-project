@@ -32,3 +32,12 @@ class UserUpdated extends CoreEvent {
   @override
   List<Object> get props => [user];
 }
+
+class TokenUpdated extends CoreEvent {
+  TokenUpdated(this.token);
+
+  final String token;
+
+  @override
+  List<Object> get props => [token];
+}

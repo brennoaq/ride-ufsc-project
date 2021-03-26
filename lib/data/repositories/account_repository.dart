@@ -9,7 +9,6 @@ class AccountRepository {
   AccountRepository() {
     _getToken().then((value) => tokenSubject.add(value));
     _getUser().then((value) => userSubject.add(value));
-    print('XANFS repository loaded user: ${userSubject.value}');
   }
 
   BehaviorSubject<String> tokenSubject = BehaviorSubject();
@@ -26,7 +25,7 @@ class AccountRepository {
         return null;
       }
     } catch (error) {
-      return Exception(error.toString());
+      return Exception(error.toString().replaceAll('Exception:', ''));
     }
 
     return Exception('Something went wrong');
@@ -47,10 +46,14 @@ class AccountRepository {
   }
 
   Future<void> createSession(String token, UserModel user) async {
-    final prefs = await SharedPreferences.getInstance();
-    prefs.setString('token', token);
-    tokenSubject.add(token);
+    updateToken(token);
     updateUser(user);
+  }
+
+  Future<void> updateToken(String token) async {
+    tokenSubject.add(token);
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('token', token);
   }
 
   Future<void> updateUser(UserModel user) async {

@@ -16,8 +16,10 @@ class CoreBloc extends Bloc<CoreEvent, CoreState> {
         super(InitialState()) {
     listeners.add(_accountRepository.userSubject.listen((user) {
       userModel = user;
-      print('XANFS $user loaded');
       add(UserUpdated(user));
+    }));
+    listeners.add(_accountRepository.tokenSubject.listen((token) {
+      add(TokenUpdated(token));
     }));
   }
 
@@ -41,7 +43,9 @@ class CoreBloc extends Bloc<CoreEvent, CoreState> {
     } else if (event is ScreenResumed) {
       return _mapScreenResumedEventToState();
     } else if (event is UserUpdated) {
-      return _mapOnUserUpdatedEvent(event);
+      return _getTabState(null);
+    } else if (event is TokenUpdated) {
+      return _mapOnTokenUpdatedEvent(event);
     }
     return state;
   }
@@ -51,11 +55,9 @@ class CoreBloc extends Bloc<CoreEvent, CoreState> {
     return _getTabState(null);
   }
 
-  CoreState _mapOnUserUpdatedEvent(UserUpdated event) {
-    if (event.user != null)
-      return _getTabState(null);
-    else
-      return _getTabState(AppRoutes.loginRestart);
+  CoreState _mapOnTokenUpdatedEvent(TokenUpdated event) {
+    if (event.token == null) return _getTabState(AppRoutes.appRestart);
+    return state;
   }
 
   CoreState _mapScreenResumedEventToState() {

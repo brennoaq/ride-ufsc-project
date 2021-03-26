@@ -7,7 +7,7 @@ final RouteObserver<PageRoute> routeObserver = RouteObserver<PageRoute>();
 
 class AppRoutes {
   static const String login = '/login';
-  static const String loginRestart = '/loginRestart';
+  static const String appRestart = '/appRestart';
   static const String core = '/core';
 
   static Map<String, WidgetBuilder> defaultBuilder = <String, WidgetBuilder>{};
@@ -32,7 +32,7 @@ class AppRoutes {
             );
           },
         );
-      case AppRoutes.loginRestart:
+      case AppRoutes.appRestart:
         return PageRouteBuilder(
           pageBuilder: (context, animation1, animation2) => LoginScreen(
             routeObserver: routeObserver,

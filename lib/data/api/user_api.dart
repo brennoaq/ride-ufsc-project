@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:boilerplate_flutter/data/api/api_constants.dart';
-import 'package:boilerplate_flutter/data/api/login_response.dart';
+import 'package:boilerplate_flutter/data/api/responses/login_response.dart';
 import 'package:http/http.dart' as http;
 
 class UserApi {
