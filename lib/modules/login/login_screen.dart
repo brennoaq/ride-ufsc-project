@@ -1,10 +1,20 @@
 import 'package:boilerplate_flutter/config/styles/default_button_style.dart';
+import 'package:boilerplate_flutter/data/repositories/account_repository.dart';
 import 'package:boilerplate_flutter/modules/login/bloc/login_bloc.dart';
 import 'package:boilerplate_flutter/modules/login/components/login_form.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class LoginScreen extends StatefulWidget {
+  const LoginScreen({
+    @required RouteObserver routeObserver,
+    @required AccountRepository accountRepository,
+  })  : _routeObserver = routeObserver,
+        _accountRepository = accountRepository;
+
+  final RouteObserver _routeObserver;
+  final AccountRepository _accountRepository;
+
   @override
   _LoginScreenState createState() => _LoginScreenState();
 }
@@ -17,7 +27,7 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     return BlocProvider<LoginBloc>(
       create: (BuildContext context) {
-        LoginBloc tempBloc = LoginBloc();
+        LoginBloc tempBloc = LoginBloc(widget._accountRepository);
         bloc = tempBloc;
         return tempBloc;
       },

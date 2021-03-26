@@ -13,12 +13,12 @@ part 'login_event.dart';
 part 'login_state.dart';
 
 class LoginBloc extends Bloc<LoginEvent, LoginState> {
-  LoginBloc() : super(Loading()) {
+  LoginBloc(this.accountRepository) : super(Loading()) {
     add(OnFormChanged());
   }
 
   UserModel userModel;
-  final AccountRepository _accountRepository = AccountRepository();
+  final AccountRepository accountRepository;
 
   final TextEditingController _emailEditingController = TextEditingController();
   final TextEditingController _passwordEditingController =
@@ -58,7 +58,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
   }
 
   LoginState _mapOnLoginButtonClickedToState(LoginEvent event) {
-    _accountRepository
+    accountRepository
         .login(
             email: _emailEditingController.text,
             password: _passwordEditingController.text)

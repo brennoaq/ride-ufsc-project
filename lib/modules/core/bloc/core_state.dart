@@ -1,27 +1,28 @@
 part of 'core_bloc.dart';
 
 abstract class CoreState extends Equatable {
-  const CoreState(this.index, this.nextRoute);
+  const CoreState(this.user, this.index, this.nextRoute);
 
+  final UserModel user;
   final index;
   final String nextRoute;
 
   @override
-  List<Object> get props => [index, nextRoute];
+  List<Object> get props => [user, index, nextRoute];
 }
 
 class Home extends CoreState {
-  const Home(String nextRoute) : super(0, nextRoute);
+  const Home(UserModel user, String nextRoute) : super(user, 0, nextRoute);
 }
 
 class History extends CoreState {
-  const History(String nextRoute) : super(1, nextRoute);
+  const History(UserModel user, String nextRoute) : super(user, 1, nextRoute);
 }
 
 class Profile extends CoreState {
-  const Profile(String nextRoute) : super(2, nextRoute);
+  const Profile(UserModel user, String nextRoute) : super(user, 2, nextRoute);
 }
 
 class InitialState extends CoreState {
-  InitialState() : super(0, null);
+  InitialState() : super(null, 0, null);
 }

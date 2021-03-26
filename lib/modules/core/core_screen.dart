@@ -1,12 +1,11 @@
+import 'package:boilerplate_flutter/config/app_routes.dart';
 import 'package:boilerplate_flutter/config/styles/default_button_style.dart';
-import 'package:boilerplate_flutter/data/models/user_model.dart';
+import 'package:boilerplate_flutter/config/theme.dart';
 import 'package:boilerplate_flutter/data/repositories/account_repository.dart';
 import 'package:boilerplate_flutter/util/components/navigation_bar.dart';
-import 'package:boilerplate_flutter/config/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:flutter_phoenix/flutter_phoenix.dart';
 
 import 'bloc/core_bloc.dart';
 
@@ -57,8 +56,15 @@ class _CoreScreenState extends State<CoreScreen> with RouteAware {
       child: BlocConsumer<CoreBloc, CoreState>(
         listener: (BuildContext context, CoreState state) {
           if (state.nextRoute != null) {
-            Navigator.of(context, rootNavigator: true)
-                .pushNamed(state.nextRoute);
+            if (state.nextRoute == AppRoutes.loginRestart) {
+              Navigator.of(context, rootNavigator: true)
+                  .pushNamedAndRemoveUntil(state.nextRoute, (route) {
+                return false;
+              });
+            } else {
+              Navigator.of(context, rootNavigator: true)
+                  .pushNamed(state.nextRoute);
+            }
           }
           // } else if (state is Logout) {
           //   Navigator.pop(context);
@@ -87,7 +93,6 @@ class _CoreScreenState extends State<CoreScreen> with RouteAware {
 
   Widget _getBody(BuildContext context, CoreState state) {
     Widget body = Container();
-    UserModel userModel = bloc.userModel;
     if (state is Home) {
       return Container(
         color: BoilerColors.orange,
@@ -98,11 +103,11 @@ class _CoreScreenState extends State<CoreScreen> with RouteAware {
               SvgPicture.asset('assets/images/logo.svg',
                   width: 72, height: 72, color: Colors.green),
               Text(
-                userModel.username,
+                state.user?.username ?? "",
                 style: Theme.of(context).textTheme.headline2,
               ),
               Text(
-                userModel.email,
+                state.user?.email ?? "",
                 style: Theme.of(context).textTheme.headline1,
               ),
               Padding(
@@ -110,9 +115,6 @@ class _CoreScreenState extends State<CoreScreen> with RouteAware {
                 child: ElevatedButton(
                   onPressed: () {
                     context.read<CoreBloc>().add(Logout());
-                    // Nav
-                    // igator.pop(context);
-                    Phoenix.rebirth(context);
                   },
                   style: getDefaultButtonStyle(),
                   child: Text(

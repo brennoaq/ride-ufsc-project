@@ -24,9 +24,11 @@ class Logout extends CoreEvent {
   Logout();
 }
 
-class CoreScreenUpdated extends CoreEvent {
-  CoreScreenUpdated();
+class UserUpdated extends CoreEvent {
+  UserUpdated(this.user);
+
+  final UserModel user;
 
   @override
-  List<Object> get props => [];
+  List<Object> get props => [user];
 }

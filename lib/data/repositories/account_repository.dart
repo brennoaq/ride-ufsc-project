@@ -2,15 +2,14 @@ import 'dart:convert';
 
 import 'package:boilerplate_flutter/data/api/user_api.dart';
 import 'package:boilerplate_flutter/data/models/user_model.dart';
-import 'package:flutter/material.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:flutter_phoenix/flutter_phoenix.dart';
 
 class AccountRepository {
   AccountRepository() {
     _getToken().then((value) => tokenSubject.add(value));
     _getUser().then((value) => userSubject.add(value));
+    print('XANFS repository loaded user: ${userSubject.value}');
   }
 
   BehaviorSubject<String> tokenSubject = BehaviorSubject();
@@ -40,12 +39,17 @@ class AccountRepository {
 
   Future<UserModel> _getUser() async {
     final prefs = await SharedPreferences.getInstance();
-    return UserModel.fromJSON(jsonDecode(prefs.getString('user')));
+    final userJsonString = prefs.getString('user');
+    if (userJsonString?.isNotEmpty == true) {
+      return UserModel.fromJSON(jsonDecode(userJsonString));
+    }
+    return null;
   }
 
   Future<void> createSession(String token, UserModel user) async {
     final prefs = await SharedPreferences.getInstance();
     prefs.setString('token', token);
+    tokenSubject.add(token);
     updateUser(user);
   }
 
@@ -55,8 +59,11 @@ class AccountRepository {
     prefs.setString('user', user.jsonString);
   }
 
-  Future<bool> logout() async {
+  Future logout() async {
     final prefs = await SharedPreferences.getInstance();
-    return prefs.remove('user');
+    await prefs.remove('token');
+    await prefs.remove('user');
+    userSubject.add(null);
+    tokenSubject.add(null);
   }
 }

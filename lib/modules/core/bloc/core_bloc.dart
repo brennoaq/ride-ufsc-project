@@ -1,11 +1,12 @@
 import 'dart:async';
+
+import 'package:bloc/bloc.dart';
+import 'package:boilerplate_flutter/config/app_routes.dart';
 import 'package:boilerplate_flutter/data/models/user_model.dart';
 import 'package:boilerplate_flutter/data/repositories/account_repository.dart';
 import 'package:equatable/equatable.dart';
-import 'package:bloc/bloc.dart';
 
 part 'core_event.dart';
-
 part 'core_state.dart';
 
 class CoreBloc extends Bloc<CoreEvent, CoreState> {
@@ -15,15 +16,15 @@ class CoreBloc extends Bloc<CoreEvent, CoreState> {
         super(InitialState()) {
     listeners.add(_accountRepository.userSubject.listen((user) {
       userModel = user;
-      add(CoreScreenUpdated());
+      print('XANFS $user loaded');
+      add(UserUpdated(user));
     }));
-
-    add(OnTabChanged(0));
   }
 
   List<StreamSubscription> listeners = [];
   final AccountRepository _accountRepository;
   UserModel userModel;
+  int tabIndex = 0;
 
   @override
   Stream<CoreState> mapEventToState(
@@ -39,29 +40,32 @@ class CoreBloc extends Bloc<CoreEvent, CoreState> {
       return _mapLogoutEventToState();
     } else if (event is ScreenResumed) {
       return _mapScreenResumedEventToState();
+    } else if (event is UserUpdated) {
+      return _mapOnUserUpdatedEvent(event);
     }
     return state;
   }
 
   CoreState _mapOnChangedTabEvent(OnTabChanged event) {
-    switch (event.tabIndex) {
-      case 1:
-        return History(null);
-      case 2:
-        return Profile(null);
-      default:
-        return Home(null);
-    }
+    tabIndex = event.tabIndex;
+    return _getTabState(null);
+  }
+
+  CoreState _mapOnUserUpdatedEvent(UserUpdated event) {
+    if (event.user != null)
+      return _getTabState(null);
+    else
+      return _getTabState(AppRoutes.loginRestart);
   }
 
   CoreState _mapScreenResumedEventToState() {
     CoreState currentState = state;
     if (currentState is Home) {
-      return Home(null);
+      return Home(userModel, null);
     } else if (currentState is Profile) {
-      return Profile(null);
+      return Profile(userModel, null);
     } else if (currentState is History) {
-      return History(null);
+      return History(userModel, null);
     }
     return currentState;
   }
@@ -69,6 +73,17 @@ class CoreBloc extends Bloc<CoreEvent, CoreState> {
   CoreState _mapLogoutEventToState() {
     _accountRepository.logout();
     return state;
+  }
+
+  CoreState _getTabState(String nextRoute) {
+    switch (tabIndex) {
+      case 1:
+        return History(userModel, nextRoute);
+      case 2:
+        return Profile(userModel, nextRoute);
+      default:
+        return Home(userModel, nextRoute);
+    }
   }
 
   @override
