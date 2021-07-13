@@ -17,7 +17,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     add(OnFormChanged());
   }
 
-  UserModel userModel;
+  UserModel? userModel;
   final AccountRepository accountRepository;
 
   final TextEditingController _emailEditingController = TextEditingController();
@@ -80,14 +80,14 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     return Error(error: event.error);
   }
 
-  LoginState _getIdleState(String nextRoute) {
+  LoginState _getIdleState(String? nextRoute) {
     bool isValidEmail = _emailEditingController.text.isValidEmail();
     bool isValidPassword = _passwordEditingController.text.isValidPassword();
 
-    String emailError = _emailEditingController.text.isEmpty
+    String? emailError = _emailEditingController.text.isEmpty
         ? null
         : (isValidEmail ? null : "Invalid email");
-    String passwordError = _passwordEditingController.text.isEmpty
+    String? passwordError = _passwordEditingController.text.isEmpty
         ? null
         : (isValidPassword ? null : "Passwords must have at least 8 chars");
 

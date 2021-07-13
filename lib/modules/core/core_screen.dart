@@ -11,8 +11,8 @@ import 'bloc/core_bloc.dart';
 
 class CoreScreen extends StatefulWidget {
   const CoreScreen({
-    @required RouteObserver routeObserver,
-    @required AccountRepository accountRepository,
+    required RouteObserver routeObserver,
+    required AccountRepository accountRepository,
   })  : _routeObserver = routeObserver,
         _accountRepository = accountRepository;
 
@@ -24,12 +24,15 @@ class CoreScreen extends StatefulWidget {
 }
 
 class _CoreScreenState extends State<CoreScreen> with RouteAware {
-  CoreBloc bloc;
+  CoreBloc? bloc;
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    widget._routeObserver.subscribe(this, ModalRoute.of(context));
+    ModalRoute? route = ModalRoute.of(context);
+    if (route != null) {
+      widget._routeObserver.subscribe(this, route);
+    }
   }
 
   @override
@@ -55,15 +58,17 @@ class _CoreScreenState extends State<CoreScreen> with RouteAware {
       },
       child: BlocConsumer<CoreBloc, CoreState>(
         listener: (BuildContext context, CoreState state) {
-          if (state.nextRoute != null) {
-            if (state.nextRoute == AppRoutes.appRestart) {
+          String? localNextRoute = state.nextRoute;
+
+          if (localNextRoute != null) {
+            if (localNextRoute == AppRoutes.appRestart) {
               Navigator.of(context, rootNavigator: true)
-                  .pushNamedAndRemoveUntil(state.nextRoute, (route) {
+                  .pushNamedAndRemoveUntil(localNextRoute, (route) {
                 return false;
               });
             } else {
               Navigator.of(context, rootNavigator: true)
-                  .pushNamed(state.nextRoute);
+                  .pushNamed(localNextRoute);
             }
           }
         },

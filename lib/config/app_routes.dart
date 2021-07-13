@@ -42,7 +42,8 @@ class AppRoutes {
         );
 
       default:
-        return MaterialPageRoute(builder: defaultBuilder[settings.name]);
+        return MaterialPageRoute(
+            builder: defaultBuilder[settings.name]!, settings: settings);
     }
   }
 }

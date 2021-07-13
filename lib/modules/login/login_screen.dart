@@ -7,8 +7,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({
-    @required RouteObserver routeObserver,
-    @required AccountRepository accountRepository,
+    required RouteObserver routeObserver,
+    required AccountRepository accountRepository,
   })  : _routeObserver = routeObserver,
         _accountRepository = accountRepository;
 
@@ -20,7 +20,7 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  LoginBloc bloc;
+  LoginBloc? bloc;
   final _formKey = GlobalKey<FormState>();
 
   @override
@@ -33,11 +33,14 @@ class _LoginScreenState extends State<LoginScreen> {
       },
       child: BlocConsumer<LoginBloc, LoginState>(
         listener: (BuildContext context, LoginState state) {
-          if (state is Idle && state.nextRoute != null) {
-            Navigator.of(context, rootNavigator: true)
-                .pushNamedAndRemoveUntil(state.nextRoute, (route) {
-              return false;
-            });
+          if (state is Idle) {
+            String? localNextRoute = state.nextRoute;
+            if (localNextRoute != null) {
+              Navigator.of(context, rootNavigator: true)
+                  .pushNamedAndRemoveUntil(localNextRoute, (route) {
+                return false;
+              });
+            }
           } else if (state is Idle && state.nonFieldError?.isNotEmpty == true) {
             ScaffoldMessenger.of(context)
               ..hideCurrentSnackBar()

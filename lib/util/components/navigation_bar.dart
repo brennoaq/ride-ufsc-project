@@ -2,15 +2,14 @@ import 'package:boilerplate_flutter/config/theme.dart';
 import 'package:flutter/material.dart';
 
 class NavigationBar extends StatefulWidget {
-  const NavigationBar({
-    @required int currentIndex,
-    @required Function(int) onTap,
-  })  : _currentIndex = currentIndex,
+  const NavigationBar({required int currentIndex, required Function(int) onTap})
+      : _currentIndex = currentIndex,
         _onTap = onTap,
         super();
 
   final int _currentIndex;
   final Function(int) _onTap;
+
   @override
   _NavigationBarState createState() => _NavigationBarState();
 }

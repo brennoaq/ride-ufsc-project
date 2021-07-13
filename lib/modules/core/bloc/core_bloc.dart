@@ -7,12 +7,12 @@ import 'package:boilerplate_flutter/data/repositories/account_repository.dart';
 import 'package:equatable/equatable.dart';
 
 part 'core_event.dart';
+
 part 'core_state.dart';
 
 class CoreBloc extends Bloc<CoreEvent, CoreState> {
   CoreBloc(AccountRepository accountRepository)
-      : assert(accountRepository != null),
-        _accountRepository = accountRepository,
+      : _accountRepository = accountRepository,
         super(InitialState()) {
     listeners.add(_accountRepository.userSubject.listen((user) {
       userModel = user;
@@ -25,7 +25,7 @@ class CoreBloc extends Bloc<CoreEvent, CoreState> {
 
   List<StreamSubscription> listeners = [];
   final AccountRepository _accountRepository;
-  UserModel userModel;
+  UserModel? userModel;
   int tabIndex = 0;
 
   @override
@@ -77,7 +77,7 @@ class CoreBloc extends Bloc<CoreEvent, CoreState> {
     return state;
   }
 
-  CoreState _getTabState(String nextRoute) {
+  CoreState _getTabState(String? nextRoute) {
     switch (tabIndex) {
       case 1:
         return History(userModel, nextRoute);

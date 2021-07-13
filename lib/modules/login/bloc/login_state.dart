@@ -6,9 +6,9 @@ abstract class LoginState extends Equatable {
 
 class Idle extends LoginState {
   const Idle({
-    this.emailFieldState,
-    this.passwordFieldState,
-    this.isLoginButtonEnabled,
+    required this.emailFieldState,
+    required this.passwordFieldState,
+    required this.isLoginButtonEnabled,
     this.nonFieldError,
     this.nextRoute,
   });
@@ -16,11 +16,11 @@ class Idle extends LoginState {
   final FieldState emailFieldState;
   final FieldState passwordFieldState;
   final bool isLoginButtonEnabled;
-  final String nonFieldError;
-  final String nextRoute;
+  final String? nonFieldError;
+  final String? nextRoute;
 
   @override
-  List<Object> get props => [
+  List<Object?> get props => [
         emailFieldState,
         passwordFieldState,
         isLoginButtonEnabled,
@@ -34,10 +34,10 @@ class Error extends LoginState {
     this.error,
   });
 
-  final Exception error;
+  final Exception? error;
 
   @override
-  List<Object> get props => [error];
+  List<Object?> get props => [error];
 }
 
 class Loading extends LoginState {

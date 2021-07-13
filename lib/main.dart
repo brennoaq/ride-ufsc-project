@@ -18,7 +18,7 @@ void main() async {
 }
 
 AccountRepository accountRepository = AccountRepository();
-String route;
+String? route;
 
 class App extends StatefulWidget {
   @override

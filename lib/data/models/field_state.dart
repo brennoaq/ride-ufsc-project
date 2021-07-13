@@ -2,13 +2,12 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 
-class FieldState<T> extends Equatable {
-  const FieldState({this.controller, this.error, this.type});
+class FieldState extends Equatable {
+  const FieldState({required this.controller, required this.error});
 
   final TextEditingController controller;
-  final String error;
-  final T type;
+  final String? error;
 
   @override
-  List<Object> get props => [controller.text, error, type];
+  List<Object?> get props => [controller.text, error];
 }

@@ -6,7 +6,8 @@ import 'package:boilerplate_flutter/data/api/responses/login_response.dart';
 import 'package:http/http.dart' as http;
 
 class UserApi {
-  static Future<LoginResponse> login(String email, String password) async {
+  static Future<LoginResponse?> login(
+      {required String email, required String password}) async {
     Uri url = Uri.parse(ApiConstants.login());
     final http.Response response =
         await http.post(url, body: {'email': email, 'password': password});
@@ -15,7 +16,7 @@ class UserApi {
       final loginResponse = LoginResponse.fromJSON(data);
       return loginResponse;
     } else {
-      String error = (data as Map).getErrorString();
+      String? error = (data as Map).getErrorString();
       String genericError =
           'Error on request - ${response.statusCode} ${response.reasonPhrase}';
       throw new Exception(error != null ? error : genericError);
@@ -24,8 +25,8 @@ class UserApi {
 }
 
 extension UserError on Map {
-  String getErrorString() {
-    String output;
+  String? getErrorString() {
+    String? output;
     ApiConstants.errorIds.forEach((element) {
       if (this.keys.contains(element)) {
         dynamic value = this[element];

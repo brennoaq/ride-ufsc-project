@@ -7,19 +7,29 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class AccountRepository {
   AccountRepository() {
-    _getToken().then((value) => tokenSubject.add(value));
-    _getUser().then((value) => userSubject.add(value));
+    _getToken().then((value) => _tokenSubject.add(value));
+    _getUser().then((value) => _userSubject.add(value));
   }
 
-  BehaviorSubject<String> tokenSubject = BehaviorSubject();
-  BehaviorSubject<UserModel> userSubject = BehaviorSubject();
+  BehaviorSubject<String?> _tokenSubject = BehaviorSubject();
+  BehaviorSubject<UserModel?> _userSubject = BehaviorSubject();
 
-  String get token => tokenSubject.value;
-  UserModel get currentUser => userSubject.value;
+  Stream<String?> get tokenStream async* {
+    yield* _tokenSubject.stream;
+  }
 
-  Future<Exception> login({String email, String password}) async {
+  Stream<UserModel?> get userModelStream async* {
+    yield* _userSubject.stream;
+  }
+
+  String? get token => _tokenSubject.value;
+
+  UserModel? get currentUser => _userSubject.value;
+
+  Future<Exception?> login(
+      {required String email, required String password}) async {
     try {
-      var loginResponse = await UserApi.login(email, password);
+      var loginResponse = await UserApi.login(email: email, password: password);
       if (loginResponse != null) {
         await createSession(loginResponse.token, loginResponse.user);
         return null;
@@ -31,42 +41,50 @@ class AccountRepository {
     return Exception('Something went wrong');
   }
 
-  Future<String> _getToken() async {
+  Future<String?> _getToken() async {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getString('token');
   }
 
-  Future<UserModel> _getUser() async {
+  Future<UserModel?> _getUser() async {
     final prefs = await SharedPreferences.getInstance();
     final userJsonString = prefs.getString('user');
     if (userJsonString?.isNotEmpty == true) {
-      return UserModel.fromJSON(jsonDecode(userJsonString));
+      return UserModel.fromJSON(jsonDecode(userJsonString!));
     }
     return null;
   }
 
-  Future<void> createSession(String token, UserModel user) async {
+  Future<void> createSession(String? token, UserModel? user) async {
     updateToken(token);
     updateUser(user);
   }
 
-  Future<void> updateToken(String token) async {
-    tokenSubject.add(token);
+  Future<void> updateToken(String? token) async {
+    _tokenSubject.add(token);
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setString('token', token);
+    if (token != null) {
+      await prefs.setString('token', token);
+    } else {
+      await prefs.remove('token');
+    }
   }
 
-  Future<void> updateUser(UserModel user) async {
-    userSubject.add(user);
+  Future<void> updateUser(UserModel? user) async {
+    _userSubject.add(user);
     final prefs = await SharedPreferences.getInstance();
-    prefs.setString('user', user.jsonString);
+    if (user != null) {
+      await prefs.setString('user', json.encode(user.toJson()));
+    } else {
+      await prefs.remove('user');
+    }
   }
 
   Future logout() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove('token');
     await prefs.remove('user');
-    userSubject.add(null);
-    tokenSubject.add(null);
+    _userSubject.add(null);
+    _tokenSubject.add(null);
   }
 }
