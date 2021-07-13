@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:boilerplate_flutter/data/api/api_constants.dart';
-import 'package:boilerplate_flutter/data/api/responses/login_response.dart';
+import 'package:boilerplate_flutter/data/api/responses/login/login_response.dart';
 import 'package:http/http.dart' as http;
 
 class UserApi {
@@ -13,7 +13,7 @@ class UserApi {
         await http.post(url, body: {'email': email, 'password': password});
     final data = jsonDecode(response.body);
     if (response.statusCode == HttpStatus.ok) {
-      final loginResponse = LoginResponse.fromJSON(data);
+      final loginResponse = LoginResponse.fromJson(data);
       return loginResponse;
     } else {
       String? error = (data as Map).getErrorString();

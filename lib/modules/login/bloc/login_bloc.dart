@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:boilerplate_flutter/config/app_routes.dart';
 import 'package:boilerplate_flutter/data/models/field_state.dart';
-import 'package:boilerplate_flutter/data/models/user_model.dart';
+import 'package:boilerplate_flutter/data/models/user/user_model.dart';
 import 'package:boilerplate_flutter/data/repositories/account_repository.dart';
 import 'package:boilerplate_flutter/util/validator/validator.dart';
 import 'package:equatable/equatable.dart';

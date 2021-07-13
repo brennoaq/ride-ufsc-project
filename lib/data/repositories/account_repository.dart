@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:boilerplate_flutter/data/api/user_api.dart';
-import 'package:boilerplate_flutter/data/models/user_model.dart';
+import 'package:boilerplate_flutter/data/models/user/user_model.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -50,7 +50,7 @@ class AccountRepository {
     final prefs = await SharedPreferences.getInstance();
     final userJsonString = prefs.getString('user');
     if (userJsonString?.isNotEmpty == true) {
-      return UserModel.fromJSON(jsonDecode(userJsonString!));
+      return UserModel.fromJson(jsonDecode(userJsonString!));
     }
     return null;
   }

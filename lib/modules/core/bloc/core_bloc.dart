@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:boilerplate_flutter/config/app_routes.dart';
-import 'package:boilerplate_flutter/data/models/user_model.dart';
+import 'package:boilerplate_flutter/data/models/user/user_model.dart';
 import 'package:boilerplate_flutter/data/repositories/account_repository.dart';
 import 'package:equatable/equatable.dart';
 
@@ -14,12 +14,16 @@ class CoreBloc extends Bloc<CoreEvent, CoreState> {
   CoreBloc(AccountRepository accountRepository)
       : _accountRepository = accountRepository,
         super(InitialState()) {
-    listeners.add(_accountRepository.userSubject.listen((user) {
-      userModel = user;
-      add(UserUpdated(user));
+    listeners.add(_accountRepository.userModelStream.listen((user) {
+      if (user != null) {
+        userModel = user;
+        add(UserUpdated(user));
+      }
     }));
-    listeners.add(_accountRepository.tokenSubject.listen((token) {
-      add(TokenUpdated(token));
+    listeners.add(_accountRepository.tokenStream.listen((token) {
+      if (token != null) {
+        add(TokenUpdated(token));
+      }
     }));
   }
 
