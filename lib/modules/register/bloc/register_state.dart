@@ -8,14 +8,22 @@ class IdleRegister extends RegisterState {
   const IdleRegister({
     required this.emailFieldState,
     required this.passwordFieldState,
-    required this.isLoginButtonEnabled,
+    required this.nameFieldState,
+    required this.carModelFieldState,
+    required this.isRegisterButtonEnabled,
+    required this.isMotorista,
+    required this.countSeats,
     this.nonFieldError,
     this.nextRoute,
   });
 
   final FieldState emailFieldState;
   final FieldState passwordFieldState;
-  final bool isLoginButtonEnabled;
+  final FieldState nameFieldState;
+  final FieldState carModelFieldState;
+  final bool isRegisterButtonEnabled;
+  final bool isMotorista;
+  final int countSeats;
   final String? nonFieldError;
   final String? nextRoute;
 
@@ -23,7 +31,11 @@ class IdleRegister extends RegisterState {
   List<Object?> get props => [
         emailFieldState,
         passwordFieldState,
-        isLoginButtonEnabled,
+        nameFieldState,
+        carModelFieldState,
+        isRegisterButtonEnabled,
+        isMotorista,
+        countSeats,
         nonFieldError,
         nextRoute
       ];

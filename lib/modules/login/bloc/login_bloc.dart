@@ -99,7 +99,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
         : (isValidEmail ? null : "Email inválido idUFSC");
     String? passwordError = _passwordEditingController.text.isEmpty
         ? null
-        : (isValidPassword ? null : "Passwords must have at least 8 chars");
+        : (isValidPassword ? null : "As senhas devem ter pelo menos 8 caracteres");
 
     FieldState emailFieldState =
     FieldState(controller: _emailEditingController, error: emailError);

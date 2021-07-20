@@ -11,6 +11,20 @@ class OnFormChanged extends RegisterEvent {
   const OnFormChanged() : super();
 }
 
+class OnChangeMotorista extends RegisterEvent {
+  const OnChangeMotorista() : super();
+}
+
+class CountChanged extends RegisterEvent {
+  CountChanged(this.countSeat, this.isIncrease);
+
+  final int countSeat;
+  final bool isIncrease;
+
+  @override
+  List<Object> get props => [countSeat, isIncrease];
+}
+
 class OnRegisterButtonClicked extends RegisterEvent {
   OnRegisterButtonClicked();
 }
@@ -25,6 +39,7 @@ class OnRegisterSuccess extends RegisterEvent {
 
 class OnRegisterFail extends RegisterEvent {
   OnRegisterFail(this.error);
+
   final Exception error;
 
   @override

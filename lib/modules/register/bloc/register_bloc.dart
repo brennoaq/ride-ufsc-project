@@ -10,6 +10,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 
 part 'register_event.dart';
+
 part 'register_state.dart';
 
 class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
@@ -21,8 +22,14 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
   final AccountRepository accountRepository;
 
   final TextEditingController _emailEditingController = TextEditingController();
+  final TextEditingController _nameEditingController = TextEditingController();
+  final TextEditingController _carModelEditingController =
+      TextEditingController();
   final TextEditingController _passwordEditingController =
       TextEditingController();
+
+  bool _isMotorista = false;
+  int _countSeats = 1;
 
   @override
   Stream<RegisterState> mapEventToState(
@@ -42,11 +49,40 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
       return _mapOnLoginFailedToState(event);
     } else if (event is OnRegisterClicked) {
       return _mapOnRegisterClickedState();
+    } else if (event is OnChangeMotorista) {
+      return _mapOnChangeMotoristaToState(event);
+    } else if (event is CountChanged) {
+      return _mapCountChangedToState(event);
     }
     return state;
   }
 
   RegisterState _mapOnFormChangedToState(RegisterEvent event) {
+    RegisterState currentState = state;
+    if (currentState is IdleRegister ||
+        currentState is Loading ||
+        currentState is Error) {
+      return _getIdleState(null);
+    }
+    return currentState;
+  }
+
+  RegisterState _mapCountChangedToState(CountChanged event) {
+    if (event.isIncrease) {
+      if (event.countSeat < 4) {
+        _countSeats = event.countSeat + 1;
+      }
+    } else {
+      if (event.countSeat > 1) {
+        _countSeats = event.countSeat - 1;
+      }
+    }
+    return _getIdleState(null);
+  }
+
+  RegisterState _mapOnChangeMotoristaToState(OnChangeMotorista event) {
+    _isMotorista == false ? _isMotorista = true : _isMotorista = false;
+
     RegisterState currentState = state;
     if (currentState is IdleRegister ||
         currentState is Loading ||
@@ -94,21 +130,66 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
 
     String? emailError = _emailEditingController.text.isEmpty
         ? null
-        : (isValidEmail ? null : "Invalid email");
+        : (isValidEmail ? null : "Email inválido idUFSC");
+
     String? passwordError = _passwordEditingController.text.isEmpty
         ? null
-        : (isValidPassword ? null : "Passwords must have at least 8 chars");
+        : (isValidPassword
+            ? null
+            : "As senhas devem ter pelo menos 8 caracteres");
+
+    String? nameError = _nameEditingController.text.isEmpty
+        ? null
+        : (_nameEditingController.text.length < 2
+            ? "Seu nome tem que possuir mais de 2 caracteres"
+            : null);
+    bool isName = !(_nameEditingController.text.length < 2);
+
+    String? carModelError = _carModelEditingController.text.isEmpty
+        ? null
+        : (_carModelEditingController.text.length < 2
+            ? "Informe o modelo do carro"
+            : null);
+    bool isCarModel = !(_carModelEditingController.text.length < 2);
 
     FieldState emailFieldState =
         FieldState(controller: _emailEditingController, error: emailError);
     FieldState passwordFieldState = FieldState(
         controller: _passwordEditingController, error: passwordError);
+    FieldState nameFieldState =
+        FieldState(controller: _nameEditingController, error: nameError);
+    FieldState carModelFieldState = FieldState(
+        controller: _carModelEditingController, error: carModelError);
+
+   bool isButtonEnabled =  isRegisterButtonEnabled(
+        isValidPassword: isValidPassword,
+        isValidEmail: isValidEmail,
+        isName: isName,
+        isCarModel: isCarModel,
+        isMotorista: _isMotorista);
 
     return IdleRegister(
         emailFieldState: emailFieldState,
         passwordFieldState: passwordFieldState,
-        isLoginButtonEnabled: isValidPassword && isValidEmail,
+        nameFieldState: nameFieldState,
+        carModelFieldState: carModelFieldState,
+        isRegisterButtonEnabled: isButtonEnabled,
+        isMotorista: _isMotorista,
+        countSeats: _countSeats,
         nextRoute: nextRoute);
+  }
+
+  bool isRegisterButtonEnabled({
+    required bool isValidPassword,
+    required bool isValidEmail,
+    required bool isName,
+    required bool isCarModel,
+    required bool isMotorista,
+  }) {
+    if (isMotorista) {
+      return isValidPassword && isValidEmail && isName && isCarModel;
+    }
+    return isValidPassword && isValidEmail && isName;
   }
 
   @override

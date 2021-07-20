@@ -1,3 +1,4 @@
+import 'package:boilerplate_flutter/config/theme.dart';
 import 'package:flutter/material.dart';
 
 double getElevation(Set<MaterialState> states) => 0.0;
@@ -17,7 +18,7 @@ Color getColor(Set<MaterialState> states) {
   } else if (states.any(disabledStates.contains)) {
     return Colors.grey;
   }
-  return Colors.green;
+  return RideColors.primaryColor;
 }
 
 OutlinedBorder getBorder(Set<MaterialState> states) => RoundedRectangleBorder(
