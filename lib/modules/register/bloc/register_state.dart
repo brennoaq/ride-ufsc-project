@@ -1,11 +1,11 @@
-part of 'login_bloc.dart';
+part of 'register_bloc.dart';
 
-abstract class LoginState extends Equatable {
-  const LoginState();
+abstract class RegisterState extends Equatable {
+  const RegisterState();
 }
 
-class Idle extends LoginState {
-  const Idle({
+class IdleRegister extends RegisterState {
+  const IdleRegister({
     required this.emailFieldState,
     required this.passwordFieldState,
     required this.isLoginButtonEnabled,
@@ -21,15 +21,15 @@ class Idle extends LoginState {
 
   @override
   List<Object?> get props => [
-    emailFieldState,
-    passwordFieldState,
-    isLoginButtonEnabled,
-    nonFieldError,
-    nextRoute
-  ];
+        emailFieldState,
+        passwordFieldState,
+        isLoginButtonEnabled,
+        nonFieldError,
+        nextRoute
+      ];
 }
 
-class Error extends LoginState {
+class Error extends RegisterState {
   const Error({
     this.error,
   });
@@ -40,7 +40,7 @@ class Error extends LoginState {
   List<Object?> get props => [error];
 }
 
-class Loading extends LoginState {
+class Loading extends RegisterState {
   @override
   List<Object> get props => [];
 }

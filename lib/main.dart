@@ -30,17 +30,37 @@ class _AppState extends State<App> {
   Widget build(BuildContext context) {
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle(
-          statusBarColor: Colors.transparent,
-          statusBarBrightness: Brightness.dark),
+        statusBarColor: Colors.transparent,
+        statusBarBrightness: Brightness.dark,
+      ),
       child: MaterialApp(
         title: 'BoilerPlate',
         debugShowCheckedModeBanner: false,
         theme: appThemeData,
-        home: Container(),
         initialRoute: route,
-        onGenerateRoute: (settings) {
-          return AppRoutes.routeFactory(settings);
+        onGenerateInitialRoutes: (_) {
+          switch (route) {
+            case AppRoutes.register:
+              return <Route>[
+                AppRoutes.routeFactory(
+                  RouteSettings(name: AppRoutes.register),
+                )
+              ];
+            case AppRoutes.core:
+              return <Route>[
+                AppRoutes.routeFactory(
+                  RouteSettings(name: AppRoutes.core),
+                )
+              ];
+            default:
+              return <Route>[
+                AppRoutes.routeFactory(
+                  RouteSettings(name: AppRoutes.login),
+                )
+              ];
+          }
         },
+        onGenerateRoute: AppRoutes.routeFactory,
         navigatorObservers: [routeObserver],
       ),
     );
@@ -49,9 +69,9 @@ class _AppState extends State<App> {
 
 Future launcher(AccountRepository accountRepository) async {
   final prefs = await SharedPreferences.getInstance();
-  final token = prefs.getString('token');
+  final user = prefs.getString('user');
 
-  if (token != null) {
+  if (user != null) {
     route = '/core';
   } else {
     route = '/login';

@@ -6,8 +6,7 @@ import 'package:boilerplate_flutter/data/api/responses/login/login_response.dart
 import 'package:http/http.dart' as http;
 
 class UserApi {
-  static Future<LoginResponse?> login(
-      {required String email, required String password}) async {
+  static Future<LoginResponse?> login(String email, String password) async {
     Uri url = Uri.parse(ApiConstants.login());
     final http.Response response =
         await http.post(url, body: {'email': email, 'password': password});

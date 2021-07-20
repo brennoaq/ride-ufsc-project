@@ -9,11 +9,11 @@ import 'package:boilerplate_flutter/util/validator/validator.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 
-part 'login_event.dart';
-part 'login_state.dart';
+part 'register_event.dart';
+part 'register_state.dart';
 
-class LoginBloc extends Bloc<LoginEvent, LoginState> {
-  LoginBloc(this.accountRepository) : super(Loading()) {
+class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
+  RegisterBloc(this.accountRepository) : super(Loading()) {
     add(OnFormChanged());
   }
 
@@ -25,32 +25,30 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       TextEditingController();
 
   @override
-  Stream<LoginState> mapEventToState(
-    LoginEvent event,
+  Stream<RegisterState> mapEventToState(
+    RegisterEvent event,
   ) async* {
     yield _mapEventToState(event);
   }
 
-  LoginState _mapEventToState(LoginEvent event) {
+  RegisterState _mapEventToState(RegisterEvent event) {
     if (event is OnFormChanged) {
       return _mapOnFormChangedToState(event);
-    } else if (event is OnLoginButtonClicked) {
+    } else if (event is OnRegisterButtonClicked) {
       return _mapOnLoginButtonClickedToState(event);
-    } else if (event is OnLoginSuccess) {
+    } else if (event is OnRegisterSuccess) {
       return _mapOnLoginSuccessToState(event);
-    } else if (event is OnLoginFail) {
+    } else if (event is OnRegisterFail) {
       return _mapOnLoginFailedToState(event);
     } else if (event is OnRegisterClicked) {
       return _mapOnRegisterClickedState();
-    } else if (event is OnScreenResumed) {
-      return _mapOnScreenResumedToState();
     }
     return state;
   }
 
-  LoginState _mapOnFormChangedToState(LoginEvent event) {
-    LoginState currentState = state;
-    if (currentState is Idle ||
+  RegisterState _mapOnFormChangedToState(RegisterEvent event) {
+    RegisterState currentState = state;
+    if (currentState is IdleRegister ||
         currentState is Loading ||
         currentState is Error) {
       return _getIdleState(null);
@@ -58,55 +56,55 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     return currentState;
   }
 
-  LoginState _mapOnLoginButtonClickedToState(LoginEvent event) {
-    accountRepository
-        .login(
-        email: _emailEditingController.text,
-        password: _passwordEditingController.text)
-        .then((error) {
-      if (error != null) {
-        add(OnLoginFail(error));
-      } else {
-        add(OnLoginSuccess());
-      }
-    });
+  RegisterState _mapOnLoginButtonClickedToState(RegisterEvent event) {
+    //TODO implement register request
+    // accountRepository
+    //     .register(
+    //         email: _emailEditingController.text,
+    //         password: _passwordEditingController.text,
+    //         name: null,
+    //         isMotorista: null,
+    //         carro: null)
+    //     .then((error) {
+    //   if (error != null) {
+    //     add(OnRegisterFail(error));
+    //   } else {
+    //     add(OnRegisterSuccess());
+    //   }
+    // });
     return Loading();
   }
 
-  LoginState _mapOnScreenResumedToState() {
-    return _getIdleState(null);
-  }
-
-  LoginState _mapOnLoginSuccessToState(LoginEvent event) {
+  RegisterState _mapOnLoginSuccessToState(RegisterEvent event) {
     return _getIdleState(AppRoutes.core);
   }
 
-  LoginState _mapOnLoginFailedToState(OnLoginFail event) {
+  RegisterState _mapOnLoginFailedToState(OnRegisterFail event) {
     return Error(error: event.error);
   }
 
-  LoginState _mapOnRegisterClickedState() {
+  RegisterState _mapOnRegisterClickedState() {
     return _getIdleState(AppRoutes.register);
   }
 
-  LoginState _getIdleState(String? nextRoute) {
+  RegisterState _getIdleState(String? nextRoute) {
     bool isValidEmail = _emailEditingController.text.isValidEmailUFSC();
     bool isValidPassword =
-    Validator.isValidPassword(_passwordEditingController.text);
+        Validator.isValidPassword(_passwordEditingController.text);
 
     String? emailError = _emailEditingController.text.isEmpty
         ? null
-        : (isValidEmail ? null : "Email inválido idUFSC");
+        : (isValidEmail ? null : "Invalid email");
     String? passwordError = _passwordEditingController.text.isEmpty
         ? null
         : (isValidPassword ? null : "Passwords must have at least 8 chars");
 
     FieldState emailFieldState =
-    FieldState(controller: _emailEditingController, error: emailError);
+        FieldState(controller: _emailEditingController, error: emailError);
     FieldState passwordFieldState = FieldState(
         controller: _passwordEditingController, error: passwordError);
 
-    return Idle(
+    return IdleRegister(
         emailFieldState: emailFieldState,
         passwordFieldState: passwordFieldState,
         isLoginButtonEnabled: isValidPassword && isValidEmail,
@@ -115,8 +113,6 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
 
   @override
   Future<void> close() {
-    _emailEditingController.dispose();
-    _passwordEditingController.dispose();
     // listeners.forEach((element) {
     //   element.cancel();
     // });

@@ -1,6 +1,7 @@
 import 'package:boilerplate_flutter/main.dart';
 import 'package:boilerplate_flutter/modules/core/core_screen.dart';
 import 'package:boilerplate_flutter/modules/login/login_screen.dart';
+import 'package:boilerplate_flutter/modules/register/register_screen.dart';
 import 'package:flutter/material.dart';
 
 final RouteObserver<PageRoute> routeObserver = RouteObserver<PageRoute>();
@@ -9,6 +10,7 @@ class AppRoutes {
   static const String login = '/login';
   static const String appRestart = '/appRestart';
   static const String core = '/core';
+  static const String register = '/register';
 
   static Map<String, WidgetBuilder> defaultBuilder = <String, WidgetBuilder>{};
 
@@ -27,6 +29,15 @@ class AppRoutes {
         return MaterialPageRoute(
           builder: (context) {
             return LoginScreen(
+              routeObserver: routeObserver,
+              accountRepository: accountRepository,
+            );
+          },
+        );
+      case AppRoutes.register:
+        return MaterialPageRoute(
+          builder: (context) {
+            return RegisterScreen(
               routeObserver: routeObserver,
               accountRepository: accountRepository,
             );

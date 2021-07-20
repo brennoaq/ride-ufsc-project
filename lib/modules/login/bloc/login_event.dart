@@ -7,6 +7,7 @@ abstract class LoginEvent extends Equatable {
   List<Object> get props => [];
 }
 
+
 class OnFormChanged extends LoginEvent {
   const OnFormChanged() : super();
 }
@@ -15,8 +16,8 @@ class OnLoginButtonClicked extends LoginEvent {
   OnLoginButtonClicked();
 }
 
-class OnForgotPasswordClicked extends LoginEvent {
-  OnForgotPasswordClicked();
+class OnRegisterClicked extends LoginEvent {
+  OnRegisterClicked();
 }
 
 class OnLoginSuccess extends LoginEvent {
@@ -29,4 +30,8 @@ class OnLoginFail extends LoginEvent {
 
   @override
   List<Object> get props => [error];
+}
+
+class OnScreenResumed extends LoginEvent {
+  OnScreenResumed();
 }

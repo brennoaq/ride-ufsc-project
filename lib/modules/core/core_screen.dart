@@ -94,10 +94,9 @@ class _CoreScreenState extends State<CoreScreen> with RouteAware {
   }
 
   Widget _getBody(BuildContext context, CoreState state) {
-    Widget body = Container();
     if (state is Home) {
       return Container(
-        color: BoilerColors.orange,
+        color: RideColors.orange,
         child: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -105,11 +104,11 @@ class _CoreScreenState extends State<CoreScreen> with RouteAware {
               SvgPicture.asset('assets/images/logo.svg',
                   width: 72, height: 72, color: Colors.green),
               Text(
-                state.user?.username ?? "",
+                state.user?.name ?? "",
                 style: Theme.of(context).textTheme.headline2,
               ),
               Text(
-                state.user?.email ?? "",
+                state.user?.idUFSC ?? "",
                 style: Theme.of(context).textTheme.headline1,
               ),
               Padding(
@@ -132,13 +131,16 @@ class _CoreScreenState extends State<CoreScreen> with RouteAware {
       );
     } else if (state is History) {
       return Container(
-        color: BoilerColors.white[40],
+        color: RideColors.white[40],
       );
     } else if (state is Profile) {
       return Container(
-        color: BoilerColors.white[24],
+        color: RideColors.white[24],
+      );
+    } else {
+      return Container(
+        height: 0,
       );
     }
-    return body;
   }
 }

@@ -28,7 +28,7 @@ class _NavigationBarState extends State<NavigationBar> {
         BottomNavigationBarItem(
           icon: Icon(
             Icons.add_box,
-            color: BoilerColors.white[64],
+            color: RideColors.white[64],
           ),
           activeIcon: Icon(
             Icons.add_box,
@@ -39,7 +39,7 @@ class _NavigationBarState extends State<NavigationBar> {
         BottomNavigationBarItem(
           icon: Icon(
             Icons.add_box,
-            color: BoilerColors.white[64],
+            color: RideColors.white[64],
           ),
           activeIcon: Icon(
             Icons.add_box,
@@ -50,7 +50,7 @@ class _NavigationBarState extends State<NavigationBar> {
         BottomNavigationBarItem(
           icon: Icon(
             Icons.add_box,
-            color: BoilerColors.white[64],
+            color: RideColors.white[64],
           ),
           activeIcon: Icon(
             Icons.add_box,

@@ -1,9 +1,10 @@
 import 'dart:convert';
 
-import 'package:boilerplate_flutter/data/api/user_api.dart';
+import 'package:boilerplate_flutter/data/models/carro/carro.dart';
 import 'package:boilerplate_flutter/data/models/user/user_model.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class AccountRepository {
   AccountRepository() {
@@ -14,6 +15,10 @@ class AccountRepository {
   BehaviorSubject<String?> _tokenSubject = BehaviorSubject();
   BehaviorSubject<UserModel?> _userSubject = BehaviorSubject();
 
+  String? get token => _tokenSubject.value;
+
+  UserModel? get currentUser => _userSubject.value;
+
   Stream<String?> get tokenStream async* {
     yield* _tokenSubject.stream;
   }
@@ -22,22 +27,56 @@ class AccountRepository {
     yield* _userSubject.stream;
   }
 
-  String? get token => _tokenSubject.value;
-
-  UserModel? get currentUser => _userSubject.value;
-
   Future<Exception?> login(
       {required String email, required String password}) async {
     try {
-      var loginResponse = await UserApi.login(email: email, password: password);
-      if (loginResponse != null) {
-        await createSession(loginResponse.token, loginResponse.user);
-        return null;
+      UserCredential userCredential = await FirebaseAuth.instance
+          .signInWithEmailAndPassword(email: email, password: password);
+
+      //TODO implements request for get user in fireStore
+      // await createSession(userCredential.credential.token.toString(), userCredential.user);
+      return null;
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'user-not-found') {
+        print('No user found for that email.');
+      } else if (e.code == 'wrong-password') {
+        print('Wrong password provided for that user.');
       }
     } catch (error) {
       return Exception(error.toString().replaceAll('Exception:', ''));
     }
 
+    return Exception('Something went wrong');
+  }
+
+  Future<Exception?> register({
+    required String email,
+    required String password,
+    required String name,
+    required bool isMotorista,
+    required Carro? carro,
+  }) async {
+    try {
+      UserCredential userCredential = await FirebaseAuth.instance
+          .createUserWithEmailAndPassword(email: email, password: password);
+      if (userCredential.user != null) {
+        await updateUser(UserModel(
+            uid: userCredential.user!.uid,
+            idUFSC: userCredential.user!.email!,
+            name: name,
+            isMotorista: isMotorista,
+            carro: carro));
+      }
+      return null;
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'user-not-found') {
+        print('No user found for that email.');
+      } else if (e.code == 'wrong-password') {
+        print('Wrong password provided for that user.');
+      }
+    } catch (error) {
+      return Exception(error.toString().replaceAll('Exception:', ''));
+    }
     return Exception('Something went wrong');
   }
 
@@ -55,7 +94,7 @@ class AccountRepository {
     return null;
   }
 
-  Future<void> createSession(String? token, UserModel? user) async {
+  Future<void> createSession(String token, UserModel user) async {
     updateToken(token);
     updateUser(user);
   }
@@ -81,6 +120,7 @@ class AccountRepository {
   }
 
   Future logout() async {
+    await FirebaseAuth.instance.signOut();
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove('token');
     await prefs.remove('user');
